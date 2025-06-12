@@ -1,37 +1,43 @@
-// models/Property.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const specificationSchema = new mongoose.Schema({
-  heading: String,
-  description: String,
-});
 
 const propertySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "Please enter property name"],
   },
 
   description: {
     type: String,
-    required: true,
+    required: [true, "Please enter property description"],
   },
 
   hostedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+    ref: "Host",
+    required: [true, "Please enter host information"],
   },
 
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true,
+    ref: "Category",
+    required: [true, "Please select a category for the property"],
   },
 
   amenities: [String],
 
-  specifications: [specificationSchema],
+  specifications: [
+    {
+      title:{
+        type: String,
+        required: true,
+      },
+      description:{
+        type: String,
+        required: true,
+      }
+    }
+  ],
 
   freeFacilities: [String],
 
@@ -51,18 +57,29 @@ const propertySchema = new mongoose.Schema({
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
       },
       rating: Number,
       review: String,
-    }
+    },
   ],
 
-  images: [String], // Store image URLs or paths
+  images: [
+    {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 
   cost: {
     type: Number,
-    required: true,
+    required: [true, "Please enter cost of the property"],
   },
 
   createdAt: {
@@ -71,4 +88,4 @@ const propertySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Property', propertySchema);
+module.exports = mongoose.model("Property", propertySchema);
