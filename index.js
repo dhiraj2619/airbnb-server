@@ -2,10 +2,13 @@ const express = require('express');
 const { PORT } = require('./config/config');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const connectToDB = require('./dbConnection');
 const app = express();  
 
 
 const port = PORT;
+
+connectToDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
