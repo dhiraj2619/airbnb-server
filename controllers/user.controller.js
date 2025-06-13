@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 const Cloudinary = require("cloudinary");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/config");
-s;
+
 
 const signupUser = async (req, res) => {
   try {

@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/user',userRouter);
+app.use('/api/v1',userRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
