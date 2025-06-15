@@ -7,6 +7,7 @@ const userRouter = require('./routes/user.route');
 const app = express();  
 const cloudinary = require('cloudinary');
 const categoryRouter = require('./routes/category.route');
+const propertyRouter = require('./routes/property.route');
 
 
 const port = PORT;
@@ -31,8 +32,9 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/v1',userRouter);
-app.use('/api/v1',categoryRouter);
+app.use('/api/v1/user',userRouter);
+app.use('/api/v1/category',categoryRouter);
+app.use('/api/v1/property',propertyRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
