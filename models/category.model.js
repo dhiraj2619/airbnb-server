@@ -8,8 +8,14 @@ const categorySchema = new mongoose.Schema({
         unique: true,
     },
     thumbnail: {
-        type: String,  
-        required: true,
+       public_id: {
+            type: String,
+            required: [true, "Please upload a thumbnail image"],
+        },
+        url: {
+            type: String,
+            required: [true, "Please upload a thumbnail image"],
+        },
     },
 });
 
