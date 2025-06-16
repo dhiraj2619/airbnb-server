@@ -134,10 +134,19 @@ const getAllProperties = async (req, res) => {
 
 const getTotalPropertiesByUser = async (req, res) => {
     try {
-        
+        const userId = req.user._id;
+        const totalProperties = await Property.countDocuments({ hostedBy: userId });    
+
+
+        res.status(200).json({
+            message: "Total properties fetched successfully",
+            totalProperties,
+        });
+
     } catch (error) {
         
     }
+
 }
 
 module.exports = {
