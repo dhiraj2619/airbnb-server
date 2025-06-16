@@ -28,24 +28,30 @@ const propertySchema = new mongoose.Schema({
 
   specifications: [
     {
-      title:{
+      title: {
         type: String,
         required: true,
       },
-      description:{
+      description: {
         type: String,
         required: true,
-      }
-    }
+      },
+    },
   ],
 
   freeFacilities: [String],
 
-  supportNumbers: [String],
+  supportNumbers:[String],
 
-  activities: {
-    type: [String],
-    default: [],
+  activities: [String],
+  
+  address: {
+    type: String,
+    required: [true, "Please enter property address"],
+  },
+  city: {
+    type: String,
+    required: [true, "Please enter property city"],
   },
 
   rooms: {
