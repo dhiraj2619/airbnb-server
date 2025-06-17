@@ -1,12 +1,20 @@
 const isRoleAdmin = (req, res, next) => {
- 
-  if (req.user && req.user.role === 'admin') {
-    return next(); // User is an admin, proceed to the next middleware or route handler
-  }
-  
- 
-  return res.status(403).json({ message: 'Access denied. Admins are allowed for this action.' });
-}
+  try {
 
+    const user = req.user;
+    
+    if (!user || user.role.toLowerCase() !== "admin") {
+      return res.status(403).json({
+        message:
+          "Access denied. Only Admins are allowed to perform this action.",
+      });
+    }
+    return next();
+  } catch (error) {
+    console.error("Error in isRoleAdmin middleware:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  const user = req.user;
+};
 
 module.exports = isRoleAdmin;
