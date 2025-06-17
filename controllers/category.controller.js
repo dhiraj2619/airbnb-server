@@ -49,7 +49,26 @@ const addCategory = async (req, res) => {
   }
 };
 
+const getAllCategories = async(req,res)=>{
+  try {
+      const categoryCount = await Category.countDocuments();
+      const categories = await Category.find().sort({ createdAt: -1 });
+
+
+      res.status(200).json({
+        message: "Categories fetched successfully",
+        categories,
+        count: categoryCount,
+      });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   addCategory,
+  getAllCategories
 };
