@@ -9,8 +9,16 @@ const addProperty = async (req, res, next) => {
       sanitizedBody[key.trim()] = req.body[key];
     }
 
-    const { name, description, category, rooms, address, city, cost } =
-      sanitizedBody;
+    const {
+      name,
+      description,
+      category,
+      rooms,
+      address,
+      city,
+      cost,
+      propertyType,
+    } = sanitizedBody;
 
     if (
       !name ||
@@ -19,11 +27,20 @@ const addProperty = async (req, res, next) => {
       !rooms ||
       !address ||
       !city ||
-      !cost
+      !cost ||
+      !propertyType
     ) {
       return res
         .status(400)
         .json({ message: "Please provide all required fields" });
+    }
+    const ALLOWED_TYPES = ["Hotel", "Home", "Special Attraction", "Resort"];
+    if (!ALLOWED_TYPES.includes(propertyType)) {
+      return res
+        .status(400)
+        .json({
+          message: "Invalid propertyType. Allowed: " + ALLOWED_TYPES.join(", "),
+        });
     }
 
     const categoryExists = await Category.findById(category);
@@ -97,6 +114,7 @@ const addProperty = async (req, res, next) => {
       rooms: Number(rooms),
       cost: Number(cost),
       images: propertyImages,
+      propertyType,
     });
 
     res.status(201).json({
@@ -175,6 +193,7 @@ const updateProperty = async (req, res, next) => {
       "address",
       "city",
       "cost",
+      "propertyType",
     ];
 
     fieldsToUpdate.forEach((field) => {
@@ -182,6 +201,15 @@ const updateProperty = async (req, res, next) => {
         existingProperty[field] = sanitizedBody[field];
       }
     });
+
+    if (sanitizedBody.propertyType) {
+      const ALLOWED_TYPES = ["Hotel", "Home", "Special Attraction", "Resort"];
+      if (!ALLOWED_TYPES.includes(sanitizedBody.propertyType)) {
+        return res
+          .status(400)
+          .json({ message: `Invalid propertyType. Allowed: ${ALLOWED_TYPES.join(", ")}` });
+      }
+    }
 
     // Specifications
     if (sanitizedBody.specifications) {
@@ -252,8 +280,6 @@ const updateProperty = async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 module.exports = {
   addProperty,
