@@ -5,6 +5,32 @@ const { JWT_SECRET } = require("../config/config");
 const bcrypt = require("bcryptjs");
 
 
+const checkUserExists = async(req,res)=>{
+  try {
+     const {email} = req.body;
+
+     if(!email){
+        return res.status(400).json({
+          success:false,
+          userExists:false,
+          message:'please Enter Email'
+        });
+     }
+
+     const user = await User.findOne({email});
+
+     return res.status(200).json({
+      success:true,
+      userExists:!!user,
+       message: user
+        ? "User exists, proceed to login"
+        : "User does not exist, proceed to registration",
+     })
+  } catch (error) {
+    
+  }
+}
+
 const signupUser = async (req, res) => {
   try {
     const {
@@ -124,5 +150,6 @@ const loginUser = async (req, res) => {
 
 module.exports = {
   signupUser,
-  loginUser
+  loginUser,
+  checkUserExists
 };
