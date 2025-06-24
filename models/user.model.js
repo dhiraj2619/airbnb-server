@@ -25,14 +25,18 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please enter your password"],
         minlength: [6, "Password must be at least 6 characters long"],
     },
+    dateofbirth:{
+        type:Date,
+         required:[true,"Please enter your date of birth"],
+    },
     profilePic:{
         public_id: {
             type: String,
-            required: [true, "Please upload a profile picture"],
+            required: [false, "Please upload a profile picture"],
         },
         url: {
             type: String,
-            required: [true, "Please upload a profile picture"],
+            required: [false, "Please upload a profile picture"],
         },  
     },
     role: {
@@ -46,7 +50,7 @@ const userSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: [true, "Please enter your address"],
+        required: [false, "Please enter your address"],
     },
     
     createdAt: {

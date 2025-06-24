@@ -40,6 +40,7 @@ const signupUser = async (req, res) => {
       password,
       mobile,
       role,
+      dateofbirth,
       address,
       googleId,
     } = req.body;
@@ -81,6 +82,7 @@ const signupUser = async (req, res) => {
       mobile,
       role: role || "user",
       address,
+      dateofbirth,
       profilePic: {
         public_id: profilePicResult.public_id,
         url: profilePicResult.secure_url,
