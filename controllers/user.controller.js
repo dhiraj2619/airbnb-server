@@ -51,11 +51,7 @@ const signupUser = async (req, res) => {
         .json({ message: "Please fill all the required fields" });
     }
 
-    if (!req.files || !req.files.profilePic) {
-      return res
-        .status(400)
-        .json({ message: "Please upload a profile picture" });
-    }
+   
 
     const existingUser = await User.findOne({ email });
 
@@ -63,13 +59,7 @@ const signupUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const profilePicResult = await Cloudinary.v2.uploader.upload(
-      req.files.profilePic[0].path,
-      {
-        folder: "users/profile_pics",
-      }
-    );
-
+   
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
@@ -83,10 +73,6 @@ const signupUser = async (req, res) => {
       role: role || "user",
       address,
       dateofbirth,
-      profilePic: {
-        public_id: profilePicResult.public_id,
-        url: profilePicResult.secure_url,
-      },
       googleId: googleId || null,
     });
 
