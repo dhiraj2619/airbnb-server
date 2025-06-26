@@ -127,47 +127,40 @@ const loginUser = async (req, res) => {
 
 const googleLogin = async (req, res) => {
   try {
-    const { id_token } = req.body;
+    const { access_token } = req.body;
+  if (!access_token)
+    return res.status(400).json({ success:false, message:"access_token missing" });
+ 
+  const { data: profile } = await axios.get(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    { headers: { Authorization: `Bearer ${access_token}` } }
+  );
 
-    if (!id_token) {
-      return res
-        .status(400)
-        .json({ success: false, message: "id_token missing" });
-    }
+  
+  const {
+    sub: googleId,
+    email,
+    given_name: firstName,
+    family_name: lastName,
+    picture,
+  } = profile;
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: id_token,
-      audience: GOOGLE_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-
-    const {
-      sub: googleId,
+  // 3. upsert user
+  let user = await User.findOne({ googleId });
+  if (!user) {
+    user = await User.create({
+      googleId,
+      firstName,
+      lastName,
       email,
-      given_name: firstName,
-      family_name: lastName,
-      picture,
-    } = payload;
-
-    let user = await User.findOne({ googleId });
-    if (!user) {
-      user = await User.create({
-        googleId,
-        firstName,
-        lastName,
-        email,
-        profilePic: { url: picture },
-      });
-    }
-
-    // Sign app JWT
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, {
-      expiresIn: "7d",
+      profilePic: { url: picture },
     });
+  }
 
-    res.status(201).json({ success: true, user, token });
-  } catch (error) {
+  // 4. sign your own JWT
+  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+  res.status(200).json({ success: true, user, token });
+ } catch (error) {
     console.error("[google-login] error:", err);
     res.status(400).json({ success: false, message: "Invalid Google token" });
   }
