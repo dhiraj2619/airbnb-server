@@ -16,6 +16,7 @@ const passport = require("passport");
 const userRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const authenticate = require("../middlewares/authenticate");
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 userRouter.post("/check-user", checkUserExists);
@@ -42,6 +43,11 @@ userRouter.get('/google/callback',passport.authenticate('google',{failureRedirec
    res.header('x-auth-token', token).redirect('http:/localhost:3000/auth/google/callback?token='+token);
 })
 
+
+userRouter.get('/profile',authenticate,async(req,res)=>{
+  const fullUser = await User.findById(req.user._id).lean();
+  res.json({ user: fullUser });
+})
 // userRouter.post("/google-login", googleLogin);
 
 module.exports = userRouter;
