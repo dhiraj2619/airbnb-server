@@ -161,7 +161,7 @@ const googleLogin = async (req, res) => {
   const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
   res.status(200).json({ success: true, user, token });
  } catch (error) {
-    console.error("[google-login] error:", err);
+    console.error("[google-login] error:", error);
     res.status(400).json({ success: false, message: "Invalid Google token" });
   }
 };
