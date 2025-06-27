@@ -30,31 +30,18 @@ userRouter.post("/login", loginUser);
 
 
 userRouter.get(
-  "/google",
+  'google',
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: "select_account",
+    
   })
 );
 
-userRouter.get(
-  "/google/callback",
-  passport.authenticate("google", { session:false, failureRedirect:"/become-host" }),
-  (req, res) => {
-    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, { expiresIn:"7d" });
+userRouter.get('/google/callback',passport.authenticate('google',{failureRedirect:'/become-host'}),(req,res)=>{
+   const token = jwt.sign({ id: req.user._id }, JWT_SECRET, { expiresIn: "7d" });
+   res.header('x-auth-token', token).redirect('http:/localhost:3000/auth/google/callback?token='+token);
+})
 
-    /* 👇 allow the popup to talk to its opener */
-    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-
-    res.send(`
-      <script>
-        window.opener.postMessage(${JSON.stringify({ token })}, "${CLIENT_ORIGIN}");
-        window.close();
-      </script>
-    `);
-  }
-);
-
-userRouter.post("/google-login", googleLogin);
+// userRouter.post("/google-login", googleLogin);
 
 module.exports = userRouter;
