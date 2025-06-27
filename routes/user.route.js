@@ -39,21 +39,16 @@ userRouter.get(
 
 userRouter.get(
   "/google/callback",
-  passport.authenticate("google", {
-    session: false,
-    failureRedirect: "/become-host",
-  }),
+  passport.authenticate("google", { session:false, failureRedirect:"/become-host" }),
   (req, res) => {
-    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, { expiresIn:"7d" });
+
+    /* 👇 allow the popup to talk to its opener */
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
 
     res.send(`
       <script>
-        window.opener.postMessage(
-          ${JSON.stringify({ token })},
-          "${CLIENT_ORIGIN}"
-        );
+        window.opener.postMessage(${JSON.stringify({ token })}, "${CLIENT_ORIGIN}");
         window.close();
       </script>
     `);
