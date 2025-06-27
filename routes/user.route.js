@@ -10,6 +10,7 @@ const {
   SESSION_SECRET,
   JWT_SECRET,
   GOOGLE_CLIENT_ID,
+  CLIENT_ORIGIN,
 } = require("../config/config");
 const passport = require("passport");
 const userRouter = express.Router();
@@ -57,7 +58,7 @@ userRouter.get(
       <script>
         window.opener.postMessage(
           ${JSON.stringify({ token })},
-          "${process.env.CLIENT_ORIGIN}"
+          "${CLIENT_ORIGIN}"
         );
         window.close();
       </script>
