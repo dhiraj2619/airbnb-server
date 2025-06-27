@@ -127,42 +127,44 @@ const loginUser = async (req, res) => {
 
 const googleLogin = async (req, res) => {
   try {
-    const { access_token } = req.body;
-  if (!access_token)
-    return res.status(400).json({ success:false, message:"access_token missing" });
- 
-  const { data: profile } = await axios.get(
-    "https://www.googleapis.com/oauth2/v3/userinfo",
-    { headers: { Authorization: `Bearer ${access_token}` } }
-  );
+    const { id_token } = req.body;
+    if (!id_token)
+      return res
+        .status(400)
+        .json({ success: false, message: "id_token missing" });
 
-  
-  const {
-    sub: googleId,
-    email,
-    given_name: firstName,
-    family_name: lastName,
-    picture,
-  } = profile;
-
-  // 3. upsert user
-  let user = await User.findOne({ googleId });
-  if (!user) {
-    user = await User.create({
-      googleId,
-      firstName,
-      lastName,
-      email,
-      profilePic: { url: picture },
+    const ticket = await googleClient.verifyIdToken({
+      idToken: id_token,
+      audience: GOOGLE_CLIENT_ID,
     });
-  }
+    const {
+      sub: googleId,
+      email,
+      given_name: firstName,
+      family_name: lastName,
+      picture,
+    } = ticket.getPayload();
 
-  // 4. sign your own JWT
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-  res.status(200).json({ success: true, user, token });
- } catch (error) {
-    console.error("[google-login] error:", error);
-    res.status(400).json({ success: false, message: "Invalid Google token" });
+    // upsert user
+    let user = await User.findOne({ googleId });
+    if (!user) {
+      user = await User.create({
+        googleId,
+        firstName,
+        lastName,
+        email,
+        profilePic: { url: picture },
+      });
+    }
+
+    // sign your own JWT
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    return res.json({ success: true, user, token });
+  } catch (error) {
+    console.error("[google-login] error:", error.message);
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Google token" });
   }
 };
 
@@ -170,5 +172,5 @@ module.exports = {
   signupUser,
   loginUser,
   checkUserExists,
-  googleLogin
+  googleLogin,
 };
