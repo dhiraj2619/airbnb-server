@@ -14,6 +14,7 @@ const cloudinary = require("cloudinary");
 const categoryRouter = require("./routes/category.route");
 const propertyRouter = require("./routes/property.route");
 const passport = require("passport");
+require('./config/passportConfig');
 const session = require('express-session');
 
 const port = PORT;

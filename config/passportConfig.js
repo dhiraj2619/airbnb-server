@@ -9,9 +9,9 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL:
-        "https://airbnb-server-m98l.onrender.com/api/v1/user/google/callback",
+        "/api/v1/user/google/callback",
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (_accessTok, _refreshTok, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
