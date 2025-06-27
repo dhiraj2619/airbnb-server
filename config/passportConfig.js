@@ -9,7 +9,7 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL:
-        "/api/v1/user/google/callback",
+        "https://airbnb-server-m98l.onrender.com/api/v1/user/google/callback",
     },
     async (_accessTok, _refreshTok, profile, done) => {
       try {
