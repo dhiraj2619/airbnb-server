@@ -18,6 +18,7 @@ const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const authenticate = require("../middlewares/authenticate");
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+const User = require('../models/user.model');
 
 userRouter.post("/check-user", checkUserExists);
 userRouter.post(
@@ -31,7 +32,7 @@ userRouter.post("/login", loginUser);
 
 
 userRouter.get(
-  'google',
+  '/google',
   passport.authenticate("google", {
     scope: ["profile", "email"],
     
@@ -48,6 +49,6 @@ userRouter.get('/profile',authenticate,async(req,res)=>{
   const fullUser = await User.findById(req.user._id).lean();
   res.json({ user: fullUser });
 })
-// userRouter.post("/google-login", googleLogin);
+
 
 module.exports = userRouter;
