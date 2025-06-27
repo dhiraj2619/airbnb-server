@@ -27,13 +27,7 @@ userRouter.post(
 
 userRouter.post("/login", loginUser);
 
-userRouter.use(
-  require("express-session")({
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+
 
 userRouter.get(
   "/google",

@@ -9,33 +9,15 @@ passport.use(
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: "/api/v1/user/google/callback",
+      scope: ["profile", "email"],
     },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ googleId: profile.id });
-
-        if (!user) {
-          user = await User.create({
-            googleId: profile.id,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
-            email: profile.emails[0].value,
-            profilePic: {
-              url: profile.photos[0]?.value,
-            },
-          });
-
-          return done(null,user);
-        }
-      } catch (error) {
-         return done(error,null);
-      }
+    function (accessToken, refreshToken, profile, callback) {
+      callback(null, profile);
     }
   )
 );
 
-
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) =>
-  User.findById(id).then(user => done(null, user))
+  User.findById(id).then((user) => done(null, user))
 );

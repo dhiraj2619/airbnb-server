@@ -13,6 +13,8 @@ const app = express();
 const cloudinary = require("cloudinary");
 const categoryRouter = require("./routes/category.route");
 const propertyRouter = require("./routes/property.route");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
 
 const port = PORT;
 
@@ -23,6 +25,17 @@ cloudinary.config({
   api_key: CLOUDINARY_API_KEY,
   api_secret: CLOUDINARY_API_SECRET,
 });
+
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["cyberwolve"],
+    maxAge: 24 * 60 * 60 * 100,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const corsOptions = {
   origin: ["http://localhost:3000"],
