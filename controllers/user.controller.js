@@ -126,26 +126,30 @@ const loginUser = async (req, res) => {
 };
 
 const googleLogin = async (req, res) => {
-  try {
+ try {
+    // 1) Grab the id_token the frontend sends
     const { id_token } = req.body;
-    if (!id_token)
+    if (!id_token) {
       return res
         .status(400)
         .json({ success: false, message: "id_token missing" });
+    }
 
+    // 2) Verify the token with Google
     const ticket = await googleClient.verifyIdToken({
-      idToken: id_token,
+      idToken : id_token,
       audience: GOOGLE_CLIENT_ID,
     });
-    const {
-      sub: googleId,
-      email,
-      given_name: firstName,
-      family_name: lastName,
-      picture,
-    } = ticket.getPayload();
 
-    // upsert user
+    // 3) Pull the user’s Google profile from the token payload
+    const payload   = ticket.getPayload();
+    const googleId  = payload.sub;
+    const email     = payload.email;
+    const firstName = payload.given_name || "";
+    const lastName  = payload.family_name || "";
+    const picture   = payload.picture || "";
+
+    // 4) Upsert the user in your DB
     let user = await User.findOne({ googleId });
     if (!user) {
       user = await User.create({
@@ -157,15 +161,18 @@ const googleLogin = async (req, res) => {
       });
     }
 
-    // sign your own JWT
+    // 5) Issue your own JWT for the session
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    return res.json({ success: true, user, token });
-  } catch (error) {
-    console.error("[google-login] error:", error.message);
+
+    return res.status(200).json({ success: true, user, token });
+  } catch (err) {
+    console.error("[google-login] error:", err.message);
     return res
       .status(400)
       .json({ success: false, message: "Invalid Google token" });
   }
+
+
 };
 
 module.exports = {
