@@ -115,7 +115,7 @@ userRouter.post("/google-login", async (req, res) => {
       }
     );
 
-    const { email, name, picture: profilePic, sub: googleId } = googleRes.data;
+    const { email, name, picture, sub: googleId } = googleRes.data;
 
     if (!email || !googleId) {
       console.error("Google user info missing:", googleRes.data);
