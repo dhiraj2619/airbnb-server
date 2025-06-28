@@ -102,18 +102,24 @@ userRouter.get("/current-user", (req, res) => {
 });
 
 userRouter.post("/google-login", async (req, res) => {
-  try {
+ try {
     const { token: access_token } = req.body;
 
-    
-    const response = axios.get(
-      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+    // Fetch user info using access token
+    const googleRes = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
     );
 
-    const { email, name, picture:profilePic, sub: googleId } = response.data;
+    const { email, name, picture: profilePic, sub: googleId } = googleRes.data;
 
     if (!email || !googleId) {
-      return res.status(400).json({ message: "Invalid Google user data" });
+      console.error("Google user info missing:", googleRes.data);
+      return res.status(400).json({ message: "Invalid Google user info" });
     }
 
     let user = await User.findOne({ googleId });
@@ -123,18 +129,18 @@ userRouter.post("/google-login", async (req, res) => {
         name,
         email,
         googleId,
-        profilePic
+        profilePic,
       });
-
-      const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      res.status(200).json({ token: jwtToken, user });
     }
+
+    const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({ token: jwtToken, user });
   } catch (error) {
-    console.error("Google login error:", error);
-    res.status(401).json({ message: "Invalid Google token" });
+    console.error("Google login error:", error.response?.data || error.message);
+    res.status(401).json({ message: "Google authentication failed" });
   }
 });
 
