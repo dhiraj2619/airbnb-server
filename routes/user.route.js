@@ -100,4 +100,39 @@ userRouter.get("/current-user", (req, res) => {
   }
 });
 
+userRouter.post("/google-login", async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const { email, name, picture, sub: googleId } = payload;
+
+    let user = await User.findOne({ googleId });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        profilePic: picture,
+      });
+
+      const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.status(200).json({ token: jwtToken, user });
+    }
+  } catch (error) {
+    console.error("Google login error:", error);
+    res.status(401).json({ message: "Invalid Google token" });
+  }
+});
+
 module.exports = userRouter;
