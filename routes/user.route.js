@@ -18,7 +18,7 @@ const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const authenticate = require("../middlewares/authenticate");
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
-const User = require('../models/user.model');
+const User = require("../models/user.model");
 
 userRouter.post("/check-user", checkUserExists);
 userRouter.post(
@@ -29,14 +29,13 @@ userRouter.post(
 
 userRouter.post("/login", loginUser);
 
-
 // js-origin using backend url
 
 // userRouter.get(
 //   '/google',
 //   passport.authenticate("google", {
 //     scope: ["profile", "email"],
-    
+
 //   })
 // );
 
@@ -45,12 +44,10 @@ userRouter.post("/login", loginUser);
 //    res.header('x-auth-token', token).redirect('http:/localhost:3000/auth/google/callback?token='+token);
 // })
 
-
 // userRouter.get('/profile',authenticate,async(req,res)=>{
 //   const fullUser = await User.findById(req.user._id).lean();
 //   res.json({ user: fullUser });
 // })
-
 
 userRouter.get(
   "/auth/google",
@@ -61,12 +58,28 @@ userRouter.get(
 userRouter.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: `${CLIENT_ORIGIN}/login`,
-    session: true, // because we use session
+    failureRedirect: `${CLIENT_ORIGIN}/become-host`,
+    session: true,
   }),
   (req, res) => {
-    
-    res.redirect(`${CLIENT_ORIGIN}/google-success?user=${req.user._id}`);
+    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    const html = `
+      <html>
+        <body>
+          <script>
+            window.opener.postMessage({
+              token: "${token}",
+              user: ${JSON.stringify(req.user)}
+            }, "${CLIENT_ORIGIN}");
+            window.close();
+          </script>
+        </body>
+      </html>
+    `;
+    res.send(html);
   }
 );
 
