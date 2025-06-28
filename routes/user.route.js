@@ -127,7 +127,7 @@ userRouter.post("/google-login", async (req, res) => {
 
     let existingUser = await User.findOne({ googleId });
 
-    if (!existingUser) {
+    if (existingUser) {
       const jwtToken = jwt.sign({ id: existingUser._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
@@ -137,6 +137,8 @@ userRouter.post("/google-login", async (req, res) => {
 
     return res.status(200).json({
       user:{
+        firstName,
+        lastName,
         googleId,
         email,
         name,
