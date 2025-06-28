@@ -19,6 +19,7 @@ const { OAuth2Client } = require("google-auth-library");
 const authenticate = require("../middlewares/authenticate");
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 const User = require("../models/user.model");
+const { default: axios } = require("axios");
 
 userRouter.post("/check-user", checkUserExists);
 userRouter.post(
@@ -102,16 +103,18 @@ userRouter.get("/current-user", (req, res) => {
 
 userRouter.post("/google-login", async (req, res) => {
   try {
-    const { token } = req.body;
+    const { token: access_token } = req.body;
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: GOOGLE_CLIENT_ID,
-    });
+    
+    const response = axios.get(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+    );
 
-    const payload = ticket.getPayload();
+    const { email, name, picture:profilePic, sub: googleId } = response.data;
 
-    const { email, name, picture, sub: googleId } = payload;
+    if (!email || !googleId) {
+      return res.status(400).json({ message: "Invalid Google user data" });
+    }
 
     let user = await User.findOne({ googleId });
 
@@ -120,7 +123,7 @@ userRouter.post("/google-login", async (req, res) => {
         name,
         email,
         googleId,
-        profilePic: picture,
+        profilePic
       });
 
       const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
