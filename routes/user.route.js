@@ -122,11 +122,15 @@ userRouter.post("/google-login", async (req, res) => {
       return res.status(400).json({ message: "Invalid Google user info" });
     }
 
+    const [firstName,...rest] = name.split(" ");
+    const lastName = rest.join(" ") || "-";
+
     let user = await User.findOne({ googleId });
 
     if (!user) {
       user = await User.create({
-        name,
+        firstName,
+        lastName,
         email,
         googleId,
         profilePic,
