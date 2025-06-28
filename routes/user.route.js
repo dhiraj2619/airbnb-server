@@ -102,7 +102,7 @@ userRouter.get("/current-user", (req, res) => {
 });
 
 userRouter.post("/google-login", async (req, res) => {
- try {
+  try {
     const { token: access_token } = req.body;
 
     // Fetch user info using access token
@@ -122,26 +122,29 @@ userRouter.post("/google-login", async (req, res) => {
       return res.status(400).json({ message: "Invalid Google user info" });
     }
 
-    const [firstName,...rest] = name.split(" ");
+    const [firstName, ...rest] = name.split(" ");
     const lastName = rest.join(" ") || "-";
 
-    let user = await User.findOne({ googleId });
+    let existingUser = await User.findOne({ googleId });
 
-    if (!user) {
-      user = await User.create({
-        firstName,
-        lastName,
-        email,
-        googleId,
-        profilePic,
+    if (!existingUser) {
+      const jwtToken = jwt.sign({ id: existingUser._id }, JWT_SECRET, {
+        expiresIn: "7d",
       });
+
+     return res.status(200).json({ token: jwtToken, existingUser });
     }
 
-    const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    return res.status(200).json({
+      user:{
+        googleId,
+        email,
+        name,
+        profilePic:picture
+      }
+      ,new:true
+    })
 
-    res.status(200).json({ token: jwtToken, user });
   } catch (error) {
     console.error("Google login error:", error.response?.data || error.message);
     res.status(401).json({ message: "Google authentication failed" });
