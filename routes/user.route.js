@@ -134,6 +134,8 @@ userRouter.post("/google-login", async (req, res) => {
         email,
         googleId,
         profilePic,
+        dateofbirth:null,
+       
       });
     }
 
