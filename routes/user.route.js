@@ -102,7 +102,56 @@ userRouter.get("/current-user", (req, res) => {
   }
 });
 
+userRouter.post("/google-login", async (req, res) => {
+ try {
+    const { token: access_token } = req.body;
 
-userRouter.post('/complete-profile',authenticate,CompleteProfile)
+    // Fetch user info using access token
+    const googleRes = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+
+    const { email, name, picture: profilePic, sub: googleId } = googleRes.data;
+
+    if (!email || !googleId) {
+      console.error("Google user info missing:", googleRes.data);
+      return res.status(400).json({ message: "Invalid Google user info" });
+    }
+
+    const [firstName,...rest] = name.split(" ");
+    const lastName = rest.join(" ") || "-";
+
+    let user = await User.findOne({ googleId });
+
+    if (!user) {
+      user = await User.create({
+        firstName,
+        lastName,
+        email,
+        googleId,
+        profilePic,
+        dateofbirth:null,
+       
+      });
+    }
+
+    const jwtToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({ token: jwtToken, user });
+  } catch (error) {
+    console.error("Google login error:", error.response?.data || error.message);
+    res.status(401).json({ message: "Google authentication failed" });
+  }
+});
+
+
+userRouter.put('/complete-profile',authenticate,CompleteProfile);
 
 module.exports = userRouter;
