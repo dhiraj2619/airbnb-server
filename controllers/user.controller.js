@@ -174,9 +174,36 @@ const googleLogin = async (req, res) => {
   }
 };
 
+const CompleteProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const { dateofbirth, mobile } = req.body;
+
+    if (!dateofbirth || !mobile) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide date of birth and mobile number",
+      });
+    }
+
+    const updateProfile = await User.findByIdAndUpdate(
+      userId,
+      { dateofbirth, mobile },
+      { new: true }
+    );
+    res.status(200).json({ message: "Profile completed", user: updateProfile });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Something went wrong", error: err.message });
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
   checkUserExists,
   googleLogin,
+  CompleteProfile,
 };
