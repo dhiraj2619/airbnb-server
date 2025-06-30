@@ -22,6 +22,7 @@ const checkUserExists = async (req, res) => {
     return res.status(200).json({
       success: true,
       userExists: !!user,
+      user,
       message: user
         ? "User exists, proceed to login"
         : "User does not exist, proceed to registration",
