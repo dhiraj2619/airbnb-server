@@ -137,6 +137,6 @@ userRouter.post("/google-login", async (req, res) => {
 
 userRouter.put('/complete-profile',authenticate,CompleteProfile);
 
-userRouter.post('/logout',logoutUser);
+
 
 module.exports = userRouter;
