@@ -6,6 +6,7 @@ const {
   checkUserExists,
   googleLogin,
   CompleteProfile,
+  logoutUser,
 } = require("../controllers/user.controller");
 const {
   SESSION_SECRET,
