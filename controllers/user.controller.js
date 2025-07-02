@@ -127,6 +127,19 @@ const loginUser = async (req, res) => {
   }
 };
 
+
+const logoutUser=()=>{
+  try {
+     return res.status(200).json({
+      success:true,
+      message:"Logged out successfully.."
+     });
+  } catch (error) {
+       console.error("[logout] error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
 const googleLogin = async (req, res) => {
   try {
     /* 1. Access-token comes from the client */
@@ -207,4 +220,5 @@ module.exports = {
   checkUserExists,
   googleLogin,
   CompleteProfile,
+  logoutUser
 };

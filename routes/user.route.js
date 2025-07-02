@@ -31,25 +31,7 @@ userRouter.post(
 
 userRouter.post("/login", loginUser);
 
-// js-origin using backend url
 
-// userRouter.get(
-//   '/google',
-//   passport.authenticate("google", {
-//     scope: ["profile", "email"],
-
-//   })
-// );
-
-// userRouter.get('/google/callback',passport.authenticate('google',{failureRedirect:'/become-host'}),(req,res)=>{
-//    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, { expiresIn: "7d" });
-//    res.header('x-auth-token', token).redirect('http:/localhost:3000/auth/google/callback?token='+token);
-// })
-
-// userRouter.get('/profile',authenticate,async(req,res)=>{
-//   const fullUser = await User.findById(req.user._id).lean();
-//   res.json({ user: fullUser });
-// })
 
 userRouter.get(
   "/auth/google",
@@ -153,5 +135,7 @@ userRouter.post("/google-login", async (req, res) => {
 
 
 userRouter.put('/complete-profile',authenticate,CompleteProfile);
+
+userRouter.post('/logout',logoutUser);
 
 module.exports = userRouter;
