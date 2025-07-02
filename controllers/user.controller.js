@@ -116,10 +116,8 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({
       token,
-      user: {
-        _id: user._id,
-        role: user.role,
-      },
+      user,
+      token
     });
   } catch (error) {
     console.error("Login error:", error);
