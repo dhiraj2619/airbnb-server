@@ -140,7 +140,7 @@ const logoutUser = () => {
 const googleLogin = async (req, res) => {
   try {
     /* 1. Access-token comes from the client */
-    const { access_token, role = "user" } = req.body;
+    const { access_token, role } = req.body;
     if (!access_token)
       return res
         .status(400)
