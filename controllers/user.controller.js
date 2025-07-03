@@ -127,23 +127,22 @@ const loginUser = async (req, res) => {
   }
 };
 
-
-const logoutUser=()=>{
+const logoutUser = () => {
   try {
-     return res.status(200).json({
-      success:true,
-      message:"Logged out successfully.."
-     });
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully..",
+    });
   } catch (error) {
-       console.error("[logout] error:", err);
+    console.error("[logout] error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
 
 const googleLogin = async (req, res) => {
   try {
     /* 1. Access-token comes from the client */
-    const { access_token } = req.body;
+    const { access_token, role = "user" } = req.body;
     if (!access_token)
       return res
         .status(400)
@@ -173,7 +172,17 @@ const googleLogin = async (req, res) => {
         lastName,
         email,
         profilePic: { url: picture },
+        role,
       });
+    } else {
+      if (user.role !== role) {
+        user.role = role;
+        await user.save();
+      }
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.profilePic = { url: picture };
+      await user.save();
     }
 
     /* 5. Sign your own JWT */
@@ -220,5 +229,5 @@ module.exports = {
   checkUserExists,
   googleLogin,
   CompleteProfile,
-  logoutUser
+  logoutUser,
 };
