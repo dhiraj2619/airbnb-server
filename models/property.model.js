@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const propertySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -21,7 +20,7 @@ const propertySchema = new mongoose.Schema({
   propertyType: {
     type: String,
     enum: ["Hotel", "Home", "Special Attraction", "Resort"],
-    required: [true, "Please select a property type"], 
+    required: [true, "Please select a property type"],
   },
 
   category: {
@@ -47,17 +46,26 @@ const propertySchema = new mongoose.Schema({
 
   freeFacilities: [String],
 
-  supportNumbers:[String],
+  supportNumbers: [String],
 
   activities: [String],
-  
-  address: {
-    type: String,
-    required: [true, "Please enter property address"],
-  },
-  city: {
-    type: String,
-    required: [true, "Please enter property city"],
+
+  location: {
+    type: {
+      type: String,
+      enum: "Point",
+      default: "Point",
+    },
+    coordiantes: {
+      type: [Number],
+      default: [0, 0],
+    },
+    address: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
   },
 
   rooms: {
