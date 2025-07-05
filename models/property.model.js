@@ -20,13 +20,13 @@ const propertySchema = new mongoose.Schema({
   propertyType: {
     type: String,
     enum: ["Hotel", "Home", "Special Attraction", "Resort"],
-    required: [true, "Please select a property type"],
+    required: [false, "Please select a property type"],
   },
 
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: [true, "Please select a category for the property"],
+    required: [false, "Please select a category for the property"],
   },
 
   amenities: [String],
