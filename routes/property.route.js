@@ -19,17 +19,17 @@ propertyRouter.post("/add", authenticate, createInitialProperty);
 
 propertyRouter.get("/getAll", getAllProperties);
 propertyRouter.get("/hostproperties/:userId", authenticate, getHostProperties);
-propertyRouter.put(
-  "/update/:id",
-  authenticate,
-  isRoleHost,
-  upload.fields([
-    {
-      name: "images",
-      maxCount: 5,
-    },
-  ]),
-  updateProperty
-);
+// propertyRouter.put(
+//   "/update/:id",
+//   authenticate,
+//   isRoleHost,
+//   upload.fields([
+//     {
+//       name: "images",
+//       maxCount: 5,
+//     },
+//   ]),
+//   updateProperty
+// );
 
 module.exports = propertyRouter;
