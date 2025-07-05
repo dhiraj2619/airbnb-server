@@ -19,7 +19,7 @@ const createInitialProperty = async (req, res) => {
 
     return res.status(201).json({ success: true, property: newProperty });
   } catch (error) {
-    console.error("Error creating property:", err.message);
+    console.error("Error creating property:", error.message);
     return res.status(500).json({ message: "Failed to create property" });
   }
 };
