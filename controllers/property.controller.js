@@ -304,6 +304,5 @@ const getHostProperties = async (req, res) => {
 module.exports = {
   getAllProperties,
   getHostProperties,
-  updateProperty,
   createInitialProperty
 };
