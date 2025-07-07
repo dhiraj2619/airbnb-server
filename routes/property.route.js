@@ -2,12 +2,12 @@ const express = require("express");
 const propertyRouter = express.Router();
 const upload = require("../config/multerConfig");
 const {
-  addProperty,
   getAllProperties,
   getHostProperties,
-  updateProperty,
   createInitialProperty,
   createPropertyType,
+  getAllPropertyTypes,
+  createPropertyOptions,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
@@ -34,7 +34,20 @@ propertyRouter.get("/hostproperties/:userId", authenticate, getHostProperties);
 //   updateProperty
 // );
 
+propertyRouter.post(
+  "/add-propertyType",
+  authenticate,
+  isRoleAdmin,
+  upload.fields([
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    },
+  ]),
+  createPropertyType
+);
 
-propertyRouter.post("/add-propertyType",isRoleAdmin,createPropertyType);
+propertyRouter.post('/add-privacyTypes',authenticate,isRoleAdmin,createPropertyOptions);
+propertyRouter.get("/alltypes", getAllPropertyTypes);
 
 module.exports = propertyRouter;

@@ -2,6 +2,7 @@ const Category = require("../models/category.model");
 const Cloudinary = require("cloudinary");
 const Property = require("../models/property.model");
 const PropertyType = require("../models/propertyType.model");
+const PrivacyOption = require("../models/privacyOption.model");
 
 const createInitialProperty = async (req, res) => {
   try {
@@ -322,7 +323,7 @@ const createPropertyType = async (req, res) => {
       name: name.trim(),
     });
 
-    if (!existingPropertyType) {
+    if (existingPropertyType) {
       return res.status(400).json({ message: "Property Type already exists" });
     }
 
@@ -351,9 +352,64 @@ const createPropertyType = async (req, res) => {
   }
 };
 
+const createPropertyOptions = async (req, res) => {
+  try {
+    const { name, type ,description } = req.body;
+
+    if (!name || !type || !description) throw new Error("name, type ,desc are required");
+
+    const parent = await PropertyType.findById(type);
+
+    if (!parent) throw Error("invalid Property Type id");
+
+    if (!req.files || !req.files.thumbnail) {
+      return res
+        .status(400)
+        .json({ message: "please upload a thumbnail image" });
+    }
+
+    const thumbnailResult = await Cloudinary.v2.uploader.upload(
+      req.files.thumbnail[0].path,
+      {
+        folder: "propertyoptions/thumbnails",
+      }
+    );
+
+    const option = await PrivacyOption.create({
+      name,
+      type,
+      description,
+      thumbnail: {
+        public_id: thumbnailResult.public_id,
+        url: thumbnailResult.secure_url,
+      },
+    });
+
+    res.status(201).json({ success: true, option });
+  } catch (error) {
+    console.error("Error creating property privacy option:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getAllPropertyTypes = async (req, res) => {
+  try {
+    const allTypes = await PropertyType.find();
+
+    return res.status(200).json({ success: true, allTypes });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllProperties,
   getHostProperties,
   createInitialProperty,
-  createPropertyType
+  createPropertyType,
+  getAllPropertyTypes,
+  createPropertyOptions,
 };
