@@ -18,9 +18,14 @@ const propertySchema = new mongoose.Schema({
   },
 
   propertyType: {
-    type: String,
-    enum: ["Hotel", "Home", "Special Attraction", "Resort"],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PropertyType",
     required: [false, "Please select a property type"],
+  },
+  privacyType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PrivacyOption",
+    required: [false, "Please select a privacy type"],
   },
 
   category: {
@@ -106,6 +111,26 @@ const propertySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+propertySchema.pre("validate", async function (next) {
+  if (!this.isModified("privacyType")) return next();
+
+  try {
+    const PrivacyOption = mongoose.model("PrivacyOption");
+    const option = await PrivacyOption.findById(this.privacyType).select(
+      "type"
+    );
+
+    if (!option || option.type.toString() !== this.propertyType.toString()) {
+      return next(
+        new Error("privacyType does not belong to the selected propertyType")
+      );
+    }
+    next();
+  } catch (error) {
+     next(error);
+  }
 });
 
 module.exports = mongoose.model("Property", propertySchema);

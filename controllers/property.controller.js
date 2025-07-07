@@ -1,6 +1,7 @@
 const Category = require("../models/category.model");
 const Cloudinary = require("cloudinary");
 const Property = require("../models/property.model");
+const PropertyType = require("../models/propertyType.model");
 
 const createInitialProperty = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ const createInitialProperty = async (req, res) => {
       name: "Untitled Property",
       description: "To be updated",
       hostedBy: hostId,
-      propertyType: null, // Default if needed
+      propertyType: null,
       category: null,
       rooms: 1,
       cost: 0,
@@ -301,8 +302,58 @@ const getHostProperties = async (req, res) => {
 //   }
 // };
 
+const createPropertyType = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a category name" });
+    }
+
+    if (!req.files || !req.files.thumbnail) {
+      return res
+        .status(400)
+        .json({ message: "please upload a thumbnail image" });
+    }
+
+    const existingPropertyType = await PropertyType.findOne({
+      name: name.trim(),
+    });
+
+    if (!existingPropertyType) {
+      return res.status(400).json({ message: "Property Type already exists" });
+    }
+
+    const thumbnailResult = await Cloudinary.v2.uploader.upload(
+      req.files.thumbnail[0].path,
+      {
+        folder: "propertytypes/thumbnails",
+      }
+    );
+
+    const propertyType = await PropertyType.create({
+      name: name.trim(),
+      thumbnail: {
+        public_id: thumbnailResult.public_id,
+        url: thumbnailResult.secure_url,
+      },
+    });
+
+    res.status(201).json({
+      message: "Property created successfully",
+      propertyType,
+    });
+  } catch (error) {
+    console.error("Error creating property:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAllProperties,
   getHostProperties,
-  createInitialProperty
+  createInitialProperty,
+  createPropertyType
 };
