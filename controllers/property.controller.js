@@ -354,9 +354,10 @@ const createPropertyType = async (req, res) => {
 
 const createPropertyOptions = async (req, res) => {
   try {
-    const { name, type ,description } = req.body;
+    const { name, type, description } = req.body;
 
-    if (!name || !type || !description) throw new Error("name, type ,desc are required");
+    if (!name || !type || !description)
+      throw new Error("name, type ,desc are required");
 
     const parent = await PropertyType.findById(type);
 

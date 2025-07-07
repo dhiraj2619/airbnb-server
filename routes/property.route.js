@@ -47,7 +47,12 @@ propertyRouter.post(
   createPropertyType
 );
 
-propertyRouter.post('/add-privacyTypes',authenticate,isRoleAdmin,createPropertyOptions);
+propertyRouter.post('/add-privacyTypes',authenticate,isRoleAdmin,upload.fields([
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    },
+  ]),createPropertyOptions);
 propertyRouter.get("/alltypes", getAllPropertyTypes);
 
 module.exports = propertyRouter;
