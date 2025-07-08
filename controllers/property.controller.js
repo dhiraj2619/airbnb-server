@@ -13,7 +13,7 @@ const createInitialProperty = async (req, res) => {
       description: "To be updated",
       hostedBy: hostId,
       propertyType: null,
-      privacyType:null,
+      privacyType: null,
       category: null,
       rooms: 1,
       cost: 0,

@@ -113,24 +113,31 @@ const propertySchema = new mongoose.Schema({
   },
 });
 
-propertySchema.pre("validate", async function (next) {
-  if (!this.isModified("privacyType")) return next();
+propertySchema.pre('validate', async function (next) {
+ 
+  if (!this.privacyType) return next();
+
+ 
+  if (!this.isModified('privacyType')) return next();
 
   try {
-    const PrivacyOption = mongoose.model("PrivacyOption");
-    const option = await PrivacyOption.findById(this.privacyType).select(
-      "type"
-    );
+    const PrivacyOption = mongoose.model('PrivacyOption');
 
-    if (!option || option.type.toString() !== this.propertyType.toString()) {
+    const option = await PrivacyOption
+      .findById(this.privacyType)
+      .select('type');
+
+    if (!option || option.type.toString() !== this.propertyType?.toString()) {
       return next(
-        new Error("privacyType does not belong to the selected propertyType")
+        new Error('privacyType does not belong to the selected propertyType')
       );
     }
+
     next();
-  } catch (error) {
-     next(error);
+  } catch (err) {
+    next(err);
   }
 });
+
 
 module.exports = mongoose.model("Property", propertySchema);
