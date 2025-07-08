@@ -407,6 +407,25 @@ const getAllPropertyTypes = async (req, res) => {
   }
 };
 
+
+const getPropertyTypePrivacyOptions=async(req,res)=>{
+   try {
+      const {propertyTypeId} = req.params;
+
+      const options = await PrivacyOption.find({type:propertyTypeId});
+
+      return res.status(200).json({
+        success:true,
+        options
+      })
+   } catch (error) {
+     res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+   }
+}
+
 module.exports = {
   getAllProperties,
   getHostProperties,
@@ -414,4 +433,5 @@ module.exports = {
   createPropertyType,
   getAllPropertyTypes,
   createPropertyOptions,
+  getPropertyTypePrivacyOptions
 };
