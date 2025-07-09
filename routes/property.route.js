@@ -9,6 +9,7 @@ const {
   getAllPropertyTypes,
   createPropertyOptions,
   getPropertyTypePrivacyOptions,
+  processingPropertiesofUsers,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
@@ -56,5 +57,6 @@ propertyRouter.post('/add-privacyTypes',authenticate,isRoleAdmin,upload.fields([
   ]),createPropertyOptions);
 propertyRouter.get("/alltypes", getAllPropertyTypes);
 propertyRouter.get('/privacyoptions/:propertyTypeId',getPropertyTypePrivacyOptions);
+propertyRouter.get('/processingproperties/:userId',processingPropertiesofUsers);
 
 module.exports = propertyRouter;

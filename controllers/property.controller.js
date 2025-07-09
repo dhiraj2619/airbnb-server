@@ -407,24 +407,41 @@ const getAllPropertyTypes = async (req, res) => {
   }
 };
 
+const getPropertyTypePrivacyOptions = async (req, res) => {
+  try {
+    const { propertyTypeId } = req.params;
 
-const getPropertyTypePrivacyOptions=async(req,res)=>{
-   try {
-      const {propertyTypeId} = req.params;
+    const options = await PrivacyOption.find({ type: propertyTypeId });
 
-      const options = await PrivacyOption.find({type:propertyTypeId});
-
-      return res.status(200).json({
-        success:true,
-        options
-      })
-   } catch (error) {
-     res.status(500).json({
+    return res.status(200).json({
+      success: true,
+      options,
+    });
+  } catch (error) {
+    res.status(500).json({
       message: "Internal server error",
       error: error.message,
     });
-   }
-}
+  }
+};
+
+const processingPropertiesofUsers = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const hostingProperties = await Property.find({ hostedBy: userId });
+
+    return res.status(200).json({
+      success: true,
+      hostingProperties,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   getAllProperties,
@@ -433,5 +450,6 @@ module.exports = {
   createPropertyType,
   getAllPropertyTypes,
   createPropertyOptions,
-  getPropertyTypePrivacyOptions
+  getPropertyTypePrivacyOptions,
+  processingPropertiesofUsers
 };
