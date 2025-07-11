@@ -460,11 +460,11 @@ const updatePropertyLocation = async (req, res) => {
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
-      {
-        location: {
-          address: fullAddress,
-          city,
-          state,
+     {
+        $set: {
+          "location.address": fullAddress,
+          "location.city": city,
+          "location.state": state,
         },
       },
       { new: true }
