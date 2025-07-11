@@ -443,6 +443,44 @@ const processingPropertiesofUsers = async (req, res) => {
   }
 };
 
+const updatePropertyLocation = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+
+    const { city, state, flatHouse, streetAddress } = req.body;
+
+    const fullAddress = [flatHouse, streetAddress, city, state]
+      .filter(Boolean)
+      .join(", ");
+
+    const updatedProperty = await Property.findByIdAndUpdate(
+      propertyId,
+      {
+        location: {
+          type: "Point",
+          address: fullAddress,
+          city,
+          state,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedProperty) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Location updated successfully",
+      property: updatedProperty,
+    });
+  } catch (error) {
+    console.error("Error updating location:", error.message);
+    res.status(500).json({ message: "Failed to update property location" });
+  }
+};
+
 module.exports = {
   getAllProperties,
   getHostProperties,
@@ -451,5 +489,6 @@ module.exports = {
   getAllPropertyTypes,
   createPropertyOptions,
   getPropertyTypePrivacyOptions,
-  processingPropertiesofUsers
+  processingPropertiesofUsers,
+  updatePropertyLocation
 };
