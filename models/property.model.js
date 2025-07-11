@@ -56,15 +56,11 @@ const propertySchema = new mongoose.Schema({
   activities: [String],
 
   location: {
-    type: {
-      type: String,
-      enum: "Point",
-      default: "Point",
-    },
-
+  
     address: {
       type: String,
     },
+    
     city: {
       type: String,
     },

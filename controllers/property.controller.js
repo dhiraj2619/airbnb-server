@@ -18,6 +18,11 @@ const createInitialProperty = async (req, res) => {
       rooms: 1,
       cost: 0,
       images: [],
+      location: {
+        address: "",
+        city: "",
+        state: "",
+      },
     });
 
     return res.status(201).json({ success: true, property: newProperty });
@@ -457,7 +462,6 @@ const updatePropertyLocation = async (req, res) => {
       propertyId,
       {
         location: {
-          type: "Point",
           address: fullAddress,
           city,
           state,
