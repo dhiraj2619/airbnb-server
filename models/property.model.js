@@ -61,14 +61,14 @@ const propertySchema = new mongoose.Schema({
       enum: "Point",
       default: "Point",
     },
-    coordiantes: {
-      type: [Number],
-      default: [0, 0],
-    },
+
     address: {
       type: String,
     },
     city: {
+      type: String,
+    },
+    state: {
       type: String,
     },
   },
@@ -113,23 +113,21 @@ const propertySchema = new mongoose.Schema({
   },
 });
 
-propertySchema.pre('validate', async function (next) {
- 
+propertySchema.pre("validate", async function (next) {
   if (!this.privacyType) return next();
 
- 
-  if (!this.isModified('privacyType')) return next();
+  if (!this.isModified("privacyType")) return next();
 
   try {
-    const PrivacyOption = mongoose.model('PrivacyOption');
+    const PrivacyOption = mongoose.model("PrivacyOption");
 
-    const option = await PrivacyOption
-      .findById(this.privacyType)
-      .select('type');
+    const option = await PrivacyOption.findById(this.privacyType).select(
+      "type"
+    );
 
     if (!option || option.type.toString() !== this.propertyType?.toString()) {
       return next(
-        new Error('privacyType does not belong to the selected propertyType')
+        new Error("privacyType does not belong to the selected propertyType")
       );
     }
 
@@ -138,6 +136,5 @@ propertySchema.pre('validate', async function (next) {
     next(err);
   }
 });
-
 
 module.exports = mongoose.model("Property", propertySchema);
