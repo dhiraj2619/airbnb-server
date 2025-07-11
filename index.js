@@ -27,14 +27,9 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-app.use(session({
-  secret:'your_secret_key',
-  resave:false,
-  saveUninitialized:true
-}))
 
-app.use(passport.initialize());
-app.use(passport.session());
+
+
 
 const corsOptions = {
   origin: ["http://localhost:3000"],
@@ -45,8 +40,18 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 app.use(cors(corsOptions));
+
+app.use(session({
+  secret:'your_secret_key',
+  resave:false,
+  saveUninitialized:true
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.send(`<center><h1>Server is Started...</h1></center>`);

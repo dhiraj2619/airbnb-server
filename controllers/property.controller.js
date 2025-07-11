@@ -452,7 +452,9 @@ const updatePropertyLocation = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
+    
     const { city, state, flatHouse, streetAddress } = req.body;
+    console.log("Parsed fields:", { city, state, flatHouse, streetAddress });
 
     const fullAddress = [flatHouse, streetAddress]
       .filter(Boolean)
@@ -460,7 +462,7 @@ const updatePropertyLocation = async (req, res) => {
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
-     {
+      {
         $set: {
           "location.address": fullAddress,
           "location.city": city,
