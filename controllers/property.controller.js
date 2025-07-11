@@ -449,7 +449,7 @@ const updatePropertyLocation = async (req, res) => {
 
     const { city, state, flatHouse, streetAddress } = req.body;
 
-    const fullAddress = [flatHouse, streetAddress, city, state]
+    const fullAddress = [flatHouse, streetAddress]
       .filter(Boolean)
       .join(", ");
 
