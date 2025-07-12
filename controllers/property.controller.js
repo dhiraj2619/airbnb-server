@@ -452,13 +452,10 @@ const updatePropertyLocation = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    
     const { city, state, flatHouse, streetAddress } = req.body;
     console.log("Parsed fields:", { city, state, flatHouse, streetAddress });
 
-    const fullAddress = [flatHouse, streetAddress]
-      .filter(Boolean)
-      .join(", ");
+    const fullAddress = [flatHouse, streetAddress].filter(Boolean).join(", ");
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
@@ -487,6 +484,36 @@ const updatePropertyLocation = async (req, res) => {
   }
 };
 
+const updatePropertySteps = async () => {
+  try {
+    const { propertyId } = req.params;
+
+    const { propertyType, privacyType } = req.body;
+
+    const updatedProperty = await Property.findByIdAndUpdate(
+      propertyId,
+      {
+        ...(propertyType && { propertyType }),
+        ...(privacyType && { privacyType }),
+      },
+      { new: true }
+    );
+
+    if (!updatedProperty) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Property updated successfully",
+      property: updatedProperty,
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   getAllProperties,
   getHostProperties,
@@ -496,5 +523,6 @@ module.exports = {
   createPropertyOptions,
   getPropertyTypePrivacyOptions,
   processingPropertiesofUsers,
-  updatePropertyLocation
+  updatePropertyLocation,
+  updatePropertySteps
 };

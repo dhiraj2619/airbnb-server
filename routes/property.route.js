@@ -11,6 +11,7 @@ const {
   getPropertyTypePrivacyOptions,
   processingPropertiesofUsers,
   updatePropertyLocation,
+  updatePropertySteps,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
@@ -60,5 +61,6 @@ propertyRouter.get("/alltypes", getAllPropertyTypes);
 propertyRouter.get('/privacyoptions/:propertyTypeId',getPropertyTypePrivacyOptions);
 propertyRouter.get('/processingproperties/:userId',processingPropertiesofUsers);
 propertyRouter.put('/location/:propertyId',authenticate,updatePropertyLocation);
+propertyRouter.put('/:propertyId/basic',authenticate,updatePropertySteps);
 
 module.exports = propertyRouter;
