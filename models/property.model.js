@@ -68,7 +68,6 @@ const propertySchema = new mongoose.Schema({
     },
     pincode: {
       type: String,
-      required: [true, "Please enter pincode"],
     },
   },
 
