@@ -61,6 +61,6 @@ propertyRouter.get("/alltypes", getAllPropertyTypes);
 propertyRouter.get('/privacyoptions/:propertyTypeId',getPropertyTypePrivacyOptions);
 propertyRouter.get('/processingproperties/:userId',processingPropertiesofUsers);
 propertyRouter.put('/location/:propertyId',authenticate,updatePropertyLocation);
-propertyRouter.put('/:propertyId/basic',authenticate,updatePropertySteps);
+propertyRouter.put('/:propertyId/step',authenticate,updatePropertySteps);
 
 module.exports = propertyRouter;
