@@ -22,6 +22,7 @@ const createInitialProperty = async (req, res) => {
         address: "",
         city: "",
         state: "",
+        pincode: "",
       },
     });
 
