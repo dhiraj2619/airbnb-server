@@ -473,10 +473,10 @@ const updatePropertyLocation = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    const { city, state, flatHouse, streetAddress } = req.body;
+    const { city, state, flatHouse, streetAddress,pincode } = req.body;
     console.log("Parsed fields:", { city, state, flatHouse, streetAddress });
 
-    const fullAddress = [flatHouse, streetAddress].filter(Boolean).join(", ");
+    const fullAddress = [flatHouse, streetAddress,pincode].filter(Boolean).join(", ");
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,

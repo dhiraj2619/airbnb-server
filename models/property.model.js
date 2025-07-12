@@ -56,16 +56,19 @@ const propertySchema = new mongoose.Schema({
   activities: [String],
 
   location: {
-  
     address: {
       type: String,
     },
-    
+
     city: {
       type: String,
     },
     state: {
       type: String,
+    },
+    pincode: {
+      type: String,
+      required: [true, "Please enter pincode"],
     },
   },
 
