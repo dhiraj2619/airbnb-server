@@ -448,6 +448,27 @@ const processingPropertiesofUsers = async (req, res) => {
   }
 };
 
+
+const getPropertyById = async (req, res) => {
+  try {
+      const { propertyId } = req.params;
+
+      const property = await Property.findById(propertyId);
+
+      if (!property) {
+          return res.status(404).json({ message: "Property not found" });
+      }
+
+      res.status(200).json({
+          success: true,  
+          property,
+      });
+  } catch (error) {
+      console.error("Error fetching property by ID:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 const updatePropertyLocation = async (req, res) => {
   try {
     const { propertyId } = req.params;
@@ -524,5 +545,6 @@ module.exports = {
   getPropertyTypePrivacyOptions,
   processingPropertiesofUsers,
   updatePropertyLocation,
-  updatePropertySteps
+  updatePropertySteps,
+  getPropertyById
 };

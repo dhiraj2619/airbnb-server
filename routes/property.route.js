@@ -12,6 +12,7 @@ const {
   processingPropertiesofUsers,
   updatePropertyLocation,
   updatePropertySteps,
+  getPropertyById,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
@@ -51,16 +52,33 @@ propertyRouter.post(
   createPropertyType
 );
 
-propertyRouter.post('/add-privacyTypes',authenticate,isRoleAdmin,upload.fields([
+propertyRouter.post(
+  "/add-privacyTypes",
+  authenticate,
+  isRoleAdmin,
+  upload.fields([
     {
       name: "thumbnail",
       maxCount: 1,
     },
-  ]),createPropertyOptions);
+  ]),
+  createPropertyOptions
+);
 propertyRouter.get("/alltypes", getAllPropertyTypes);
-propertyRouter.get('/privacyoptions/:propertyTypeId',getPropertyTypePrivacyOptions);
-propertyRouter.get('/processingproperties/:userId',processingPropertiesofUsers);
-propertyRouter.put('/location/:propertyId',authenticate,updatePropertyLocation);
-propertyRouter.put('/:propertyId/step',authenticate,updatePropertySteps);
+propertyRouter.get(
+  "/privacyoptions/:propertyTypeId",
+  getPropertyTypePrivacyOptions
+);
+propertyRouter.get(
+  "/processingproperties/:userId",
+  processingPropertiesofUsers
+);
+propertyRouter.put(
+  "/location/:propertyId",
+  authenticate,
+  updatePropertyLocation
+);
+propertyRouter.put("/:propertyId/step", authenticate, updatePropertySteps);
+propertyRouter.get("/:propertyId", authenticate, getPropertyById);
 
 module.exports = propertyRouter;
