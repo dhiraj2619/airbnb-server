@@ -485,6 +485,7 @@ const updatePropertyLocation = async (req, res) => {
           "location.address": fullAddress,
           "location.city": city,
           "location.state": state,
+          "location.pincode": pincode,
         },
       },
       { new: true }
