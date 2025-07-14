@@ -18,6 +18,11 @@ const createInitialProperty = async (req, res) => {
       rooms: 1,
       cost: 0,
       images: [],
+      beds: 1,
+      guests: 1,  
+      bedrooms: 1,
+      bathrooms: 1,
+      locksToAllBedrooms: null,
       location: {
         address: "",
         city: "",
@@ -361,7 +366,7 @@ const createPropertyType = async (req, res) => {
 
 const createPropertyOptions = async (req, res) => {
   try {
-    const { name, type, description } = req.body;
+    const { name, type, description,extraBedrooms } = req.body;
 
     if (!name || !type || !description)
       throw new Error("name, type ,desc are required");
@@ -387,6 +392,7 @@ const createPropertyOptions = async (req, res) => {
       name,
       type,
       description,
+      extraBedrooms,
       thumbnail: {
         public_id: thumbnailResult.public_id,
         url: thumbnailResult.secure_url,

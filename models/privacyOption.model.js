@@ -22,6 +22,10 @@ const privacyOptionSchema = new mongoose.Schema(
         required: [true, "Please upload a thumbnail image"],
       },
     },
+    extraBedrooms:{
+       type: Boolean,
+       required: false,
+    }
   },
   { timestamps: true }
 );

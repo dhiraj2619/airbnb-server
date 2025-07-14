@@ -34,6 +34,20 @@ const propertySchema = new mongoose.Schema({
     required: [false, "Please select a category for the property"],
   },
 
+ 
+  bedrooms: { type: Number, default: 0 },
+  bathrooms: { type: Number, default: 0 },
+
+  beds: { type: Number, default: 0 },
+
+
+  guests: { type: Number, default: 0 },
+
+  locksToAllBedrooms: {
+    type: Boolean, 
+    required: false,
+  },
+
   amenities: [String],
 
   specifications: [
@@ -69,11 +83,6 @@ const propertySchema = new mongoose.Schema({
     pincode: {
       type: String,
     },
-  },
-
-  rooms: {
-    type: Number,
-    required: true,
   },
 
   ratings: [
