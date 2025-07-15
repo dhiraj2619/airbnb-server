@@ -19,7 +19,7 @@ const createInitialProperty = async (req, res) => {
       cost: 0,
       images: [],
       beds: 1,
-      guests: 1,  
+      guests: 1,
       bedrooms: 1,
       bathrooms: 1,
       locksToAllBedrooms: null,
@@ -366,7 +366,7 @@ const createPropertyType = async (req, res) => {
 
 const createPropertyOptions = async (req, res) => {
   try {
-    const { name, type, description,extraBedrooms } = req.body;
+    const { name, type, description, extraBedrooms } = req.body;
 
     if (!name || !type || !description)
       throw new Error("name, type ,desc are required");
@@ -455,34 +455,35 @@ const processingPropertiesofUsers = async (req, res) => {
   }
 };
 
-
 const getPropertyById = async (req, res) => {
   try {
-      const { propertyId } = req.params;
+    const { propertyId } = req.params;
 
-      const property = await Property.findById(propertyId);
+    const property = await Property.findById(propertyId);
 
-      if (!property) {
-          return res.status(404).json({ message: "Property not found" });
-      }
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
 
-      res.status(200).json({
-          success: true,  
-          property,
-      });
+    res.status(200).json({
+      success: true,
+      property,
+    });
   } catch (error) {
-      console.error("Error fetching property by ID:", error);
-      res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching property by ID:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 const updatePropertyLocation = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    const { city, state, flatHouse, streetAddress,pincode } = req.body;
+    const { city, state, flatHouse, streetAddress, pincode } = req.body;
 
-    const fullAddress = [flatHouse, streetAddress,pincode].filter(Boolean).join(", ");
+    const fullAddress = [flatHouse, streetAddress, pincode]
+      .filter(Boolean)
+      .join(", ");
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
@@ -516,14 +517,21 @@ const updatePropertySteps = async () => {
   try {
     const { propertyId } = req.params;
 
-    const { propertyType, privacyType } = req.body;
+    const { propertyType, privacyType, bedrooms, beds, bathrooms, guests } =
+      req.body;
+
+    const updateData = {
+      ...(propertyType && { propertyType }),
+      ...(privacyType && { privacyType }),
+      ...(typeof bedrooms === "number" && { bedrooms }),
+      ...(typeof beds === "number" && { beds }),
+      ...(typeof bathrooms === "number" && { bathrooms }),
+      ...(typeof guests === "number" && { guests }),
+    };
 
     const updatedProperty = await Property.findByIdAndUpdate(
       propertyId,
-      {
-        ...(propertyType && { propertyType }),
-        ...(privacyType && { privacyType }),
-      },
+      { $set: updateData },
       { new: true }
     );
 
@@ -542,30 +550,27 @@ const updatePropertySteps = async () => {
   }
 };
 
+const getPropertyprivacyById = async (req, res) => {
+  try {
+    const { privacyoptionId } = req.params;
 
+    const privacyOption = await PrivacyOption.findById(privacyoptionId);
 
-const getPropertyprivacyById =async(req,res)=>{
-   try {
-      const { privacyoptionId } = req.params;
+    console.log("Fetching privacy option by ID:", privacyoptionId);
 
-      const privacyOption = await PrivacyOption.findById(privacyoptionId);
+    if (!privacyOption) {
+      return res.status(404).json({ message: "Privacy option not found" });
+    }
 
-      console.log("Fetching privacy option by ID:", privacyoptionId);
-      
-
-      if (!privacyOption) {
-          return res.status(404).json({ message: "Privacy option not found" });
-      }
-
-      res.status(200).json({
-          success: true,  
-          privacyOption,
-      });
-   } catch (error) {
-      console.error("Error fetching privacy option by ID:", error);
-      res.status(500).json({ message: "Internal server error" });
-   }
-}
+    res.status(200).json({
+      success: true,
+      privacyOption,
+    });
+  } catch (error) {
+    console.error("Error fetching privacy option by ID:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 module.exports = {
   getAllProperties,
@@ -579,5 +584,5 @@ module.exports = {
   updatePropertyLocation,
   updatePropertySteps,
   getPropertyById,
-  getPropertyprivacyById
+  getPropertyprivacyById,
 };
