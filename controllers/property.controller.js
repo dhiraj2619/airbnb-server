@@ -543,6 +543,28 @@ const updatePropertySteps = async () => {
   }
 };
 
+
+
+const getPropertyprivacyById =async(req,res)=>{
+   try {
+      const { privacyoptionId } = req.params;
+
+      const privacyOption = await PrivacyOption.findById(privacyoptionId);
+
+      if (!privacyOption) {
+          return res.status(404).json({ message: "Privacy option not found" });
+      }
+
+      res.status(200).json({
+          success: true,  
+          privacyOption,
+      });
+   } catch (error) {
+      console.error("Error fetching privacy option by ID:", error);
+      res.status(500).json({ message: "Internal server error" });
+   }
+}
+
 module.exports = {
   getAllProperties,
   getHostProperties,
@@ -554,5 +576,6 @@ module.exports = {
   processingPropertiesofUsers,
   updatePropertyLocation,
   updatePropertySteps,
-  getPropertyById
+  getPropertyById,
+  getPropertyprivacyById
 };
