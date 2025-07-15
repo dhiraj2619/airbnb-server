@@ -513,7 +513,7 @@ const updatePropertyLocation = async (req, res) => {
   }
 };
 
-const updatePropertySteps = async () => {
+const updatePropertySteps = async (req,res) => {
   try {
     const { propertyId } = req.params;
 
