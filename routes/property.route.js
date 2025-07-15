@@ -81,7 +81,7 @@ propertyRouter.put(
 );
 propertyRouter.put("/:propertyId/step", authenticate, updatePropertySteps);
 propertyRouter.get("/:propertyId", authenticate, getPropertyById);
-propertyRouter.get("/:privacyoptionId", authenticate, getPropertyprivacyById);
+propertyRouter.get("/privacytype/:privacyoptionId", authenticate, getPropertyprivacyById);
 
 
 module.exports = propertyRouter;

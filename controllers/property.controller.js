@@ -481,7 +481,6 @@ const updatePropertyLocation = async (req, res) => {
     const { propertyId } = req.params;
 
     const { city, state, flatHouse, streetAddress,pincode } = req.body;
-    console.log("Parsed fields:", { city, state, flatHouse, streetAddress });
 
     const fullAddress = [flatHouse, streetAddress,pincode].filter(Boolean).join(", ");
 
@@ -550,6 +549,9 @@ const getPropertyprivacyById =async(req,res)=>{
       const { privacyoptionId } = req.params;
 
       const privacyOption = await PrivacyOption.findById(privacyoptionId);
+
+      console.log("Fetching privacy option by ID:", privacyoptionId);
+      
 
       if (!privacyOption) {
           return res.status(404).json({ message: "Privacy option not found" });
