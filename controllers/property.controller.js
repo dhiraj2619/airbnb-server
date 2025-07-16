@@ -517,12 +517,13 @@ const updatePropertySteps = async (req,res) => {
   try {
     const { propertyId } = req.params;
 
-    const { propertyType, privacyType, bedrooms, beds, bathrooms, guests } =
+    const { propertyType, privacyType,category, bedrooms, beds, bathrooms, guests } =
       req.body;
 
     const updateData = {
       ...(propertyType && { propertyType }),
       ...(privacyType && { privacyType }),
+      ...(category && { category }),
       ...(typeof bedrooms === "number" && { bedrooms }),
       ...(typeof beds === "number" && { beds }),
       ...(typeof bathrooms === "number" && { bathrooms }),
