@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const aminetiesSchema = new mongoose.Schema({
+  icon: {
+    type: String,
+    required: [false, "Please enter icon for the amenity"],
+  },
+  name: {
+    type: String,
+    required: [false, "Please enter name for the amenity"],
+  },
+});
+
 const propertySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -34,21 +45,23 @@ const propertySchema = new mongoose.Schema({
     required: [false, "Please select a category for the property"],
   },
 
- 
   bedrooms: { type: Number, default: 0 },
   bathrooms: { type: Number, default: 0 },
 
   beds: { type: Number, default: 0 },
 
-
   guests: { type: Number, default: 0 },
 
   locksToAllBedrooms: {
-    type: Boolean, 
+    type: Boolean,
     required: false,
   },
 
-  amenities: [String],
+  amenities: {
+    guestFavorites: [aminetiesSchema],
+    standoutAmenities: [aminetiesSchema],
+    safetyItems: [aminetiesSchema],
+  },
 
   specifications: [
     {
