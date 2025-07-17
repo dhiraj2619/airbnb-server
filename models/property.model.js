@@ -1,16 +1,5 @@
 const mongoose = require("mongoose");
 
-const aminetiesSchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    required: [false, "Please enter icon for the amenity"],
-  },
-  name: {
-    type: String,
-    required: [false, "Please enter name for the amenity"],
-  },
-});
-
 const propertySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -58,9 +47,11 @@ const propertySchema = new mongoose.Schema({
   },
 
   amenities: {
-    guestFavorites: [aminetiesSchema],
-    standoutAmenities: [aminetiesSchema],
-    safetyItems: [aminetiesSchema],
+    guestFavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Amenity" }],
+    standoutAmenities: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Amenity" },
+    ],
+    safetyItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "Amenity" }],
   },
 
   specifications: [

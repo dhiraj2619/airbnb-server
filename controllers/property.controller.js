@@ -3,6 +3,7 @@ const Cloudinary = require("cloudinary");
 const Property = require("../models/property.model");
 const PropertyType = require("../models/propertyType.model");
 const PrivacyOption = require("../models/privacyOption.model");
+const Aminity = require("../models/amenity.model");
 
 const createInitialProperty = async (req, res) => {
   try {
@@ -406,6 +407,47 @@ const createPropertyOptions = async (req, res) => {
   }
 };
 
+const createAmenity = async (req, res) => {
+  try {
+    const { name, type } = req.body;
+
+    const parent = await PropertyType.findById(type);
+
+    if (!parent) throw Error("invalid Property Type id");
+
+    if (!req.files || !req.files.thumbnail) {
+      return res
+        .status(400)
+        .json({ message: "please upload a thumbnail image" });
+    }
+
+    const thumbnailResult = await Cloudinary.v2.uploader.upload(
+      req.files.thumbnail[0].path,
+      {
+        folder: "amenities/thumbnails",
+      }
+    );
+
+    const amenities = await Aminity.create({
+      name,
+      type,
+      thumbnail: {
+        public_id: thumbnailResult.public_id,
+        url: thumbnailResult.secure_url,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Amenity created successfully",
+      amenities,
+    });
+  } catch (error) {
+    console.error("Error creating amenity:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getAllPropertyTypes = async (req, res) => {
   try {
     const allTypes = await PropertyType.find();
@@ -513,12 +555,19 @@ const updatePropertyLocation = async (req, res) => {
   }
 };
 
-const updatePropertySteps = async (req,res) => {
+const updatePropertySteps = async (req, res) => {
   try {
     const { propertyId } = req.params;
 
-    const { propertyType, privacyType,category, bedrooms, beds, bathrooms, guests } =
-      req.body;
+    const {
+      propertyType,
+      privacyType,
+      category,
+      bedrooms,
+      beds,
+      bathrooms,
+      guests,
+    } = req.body;
 
     const updateData = {
       ...(propertyType && { propertyType }),
