@@ -9,7 +9,12 @@ const amenitySchema = new mongoose.Schema({
     type: String,
     required: false, 
   },
-  type: {
+  propertytype:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PropertyType",
+    required: false,
+  },
+  amenityType: {
     type: String,
     enum: ["guestFavorite", "standout", "safety"],
     required: false,
