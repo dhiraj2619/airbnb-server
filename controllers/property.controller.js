@@ -567,6 +567,7 @@ const updatePropertySteps = async (req, res) => {
       beds,
       bathrooms,
       guests,
+      locksToAllBedrooms
     } = req.body;
 
     const updateData = {
@@ -577,6 +578,7 @@ const updatePropertySteps = async (req, res) => {
       ...(typeof beds === "number" && { beds }),
       ...(typeof bathrooms === "number" && { bathrooms }),
       ...(typeof guests === "number" && { guests }),
+      ...(locksToAllBedrooms !== "boolean" && { locksToAllBedrooms }),
     };
 
     const updatedProperty = await Property.findByIdAndUpdate(
