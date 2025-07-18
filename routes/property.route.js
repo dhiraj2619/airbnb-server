@@ -14,6 +14,7 @@ const {
   updatePropertySteps,
   getPropertyById,
   getPropertyprivacyById,
+  createAmenity,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
@@ -82,6 +83,7 @@ propertyRouter.put(
 propertyRouter.put("/:propertyId/step", authenticate, updatePropertySteps);
 propertyRouter.get("/:propertyId", authenticate, getPropertyById);
 propertyRouter.get("/privacytype/:privacyoptionId", authenticate, getPropertyprivacyById);
+propertyRouter.post("/add-ameneties",authenticate,createAmenity);
 
 
 module.exports = propertyRouter;

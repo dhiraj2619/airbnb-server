@@ -442,6 +442,8 @@ const createAmenity = async (req, res) => {
       message: "Amenity created successfully",
       amenities,
     });
+
+    
   } catch (error) {
     console.error("Error creating amenity:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -637,4 +639,5 @@ module.exports = {
   updatePropertySteps,
   getPropertyById,
   getPropertyprivacyById,
+  createAmenity
 };
