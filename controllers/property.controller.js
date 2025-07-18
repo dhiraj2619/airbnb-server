@@ -409,7 +409,7 @@ const createPropertyOptions = async (req, res) => {
 
 const createAmenity = async (req, res) => {
   try {
-    const { name, type } = req.body;
+    const { name, type , amenityType } = req.body;
 
     const parent = await PropertyType.findById(type);
 
@@ -431,6 +431,7 @@ const createAmenity = async (req, res) => {
     const amenities = await Aminity.create({
       name,
       type,
+      amenityType,
       thumbnail: {
         public_id: thumbnailResult.public_id,
         url: thumbnailResult.secure_url,

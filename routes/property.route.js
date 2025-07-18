@@ -83,7 +83,7 @@ propertyRouter.put(
 propertyRouter.put("/:propertyId/step", authenticate, updatePropertySteps);
 propertyRouter.get("/:propertyId", authenticate, getPropertyById);
 propertyRouter.get("/privacytype/:privacyoptionId", authenticate, getPropertyprivacyById);
-propertyRouter.post("/add-ameneties",authenticate,createAmenity);
+propertyRouter.post("/add-ameneties",authenticate,isRoleAdmin,createAmenity);
 
 
 module.exports = propertyRouter;

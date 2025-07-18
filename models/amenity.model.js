@@ -9,7 +9,7 @@ const amenitySchema = new mongoose.Schema({
     type: String,
     required: false, 
   },
-  propertytype:{
+  type:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "PropertyType",
     required: false,
