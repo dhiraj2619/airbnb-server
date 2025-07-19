@@ -24,7 +24,11 @@ const createInitialProperty = async (req, res) => {
       bedrooms: 1,
       bathrooms: 1,
       locksToAllBedrooms: null,
-      amenities:null,
+      amenities: {
+        guestFavorites: [],
+        standoutAmenities: [],
+        safetyItems: [],
+      },
       location: {
         address: "",
         city: "",
@@ -410,12 +414,11 @@ const createPropertyOptions = async (req, res) => {
 
 const createAmenity = async (req, res) => {
   try {
-    const { name, type , amenityType } = req.body;
+    const { name, type, amenityType } = req.body;
 
-   const parent = await PropertyType.findById(type);
+    const parent = await PropertyType.findById(type);
 
     if (!parent) throw Error("invalid Property Type id");
-
 
     if (!req.files || !req.files.thumbnail) {
       return res
@@ -445,8 +448,6 @@ const createAmenity = async (req, res) => {
       message: "Amenity created successfully",
       amenities,
     });
-
-    
   } catch (error) {
     console.error("Error creating amenity:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -572,7 +573,7 @@ const updatePropertySteps = async (req, res) => {
       beds,
       bathrooms,
       guests,
-      locksToAllBedrooms
+      locksToAllBedrooms,
     } = req.body;
 
     const updateData = {
@@ -642,5 +643,5 @@ module.exports = {
   updatePropertySteps,
   getPropertyById,
   getPropertyprivacyById,
-  createAmenity
+  createAmenity,
 };
