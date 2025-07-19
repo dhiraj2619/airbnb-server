@@ -15,31 +15,19 @@ const {
   getPropertyById,
   getPropertyprivacyById,
   createAmenity,
+  getAmenitiesListBypropertyType,
 } = require("../controllers/property.controller");
 const isRoleHost = require("../middlewares/isHostuser");
 const authenticate = require("../middlewares/authenticate");
 const isRoleAdmin = require("../middlewares/isRoleAdmin");
 
-// propertyRouter.post('/add',authenticate,isRoleHost,upload.fields([
-//     {name:'images',maxCount:5}
-// ]),addProperty);
+
 
 propertyRouter.post("/add", authenticate, createInitialProperty);
 
 propertyRouter.get("/getAll", getAllProperties);
 propertyRouter.get("/hostproperties/:userId", authenticate, getHostProperties);
-// propertyRouter.put(
-//   "/update/:id",
-//   authenticate,
-//   isRoleHost,
-//   upload.fields([
-//     {
-//       name: "images",
-//       maxCount: 5,
-//     },
-//   ]),
-//   updateProperty
-// );
+
 
 propertyRouter.post(
   "/add-propertyType",
@@ -83,7 +71,14 @@ propertyRouter.put(
 propertyRouter.put("/:propertyId/step", authenticate, updatePropertySteps);
 propertyRouter.get("/:propertyId", authenticate, getPropertyById);
 propertyRouter.get("/privacytype/:privacyoptionId", authenticate, getPropertyprivacyById);
-propertyRouter.post("/add-ameneties",authenticate,isRoleAdmin,createAmenity);
+propertyRouter.post("/add-ameneties",authenticate,isRoleAdmin, upload.fields([
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    },
+  ]),createAmenity);
+  
+  propertyRouter.get('/amenities/:propertyTypeId',authenticate,getAmenitiesListBypropertyType);
 
 
 module.exports = propertyRouter;

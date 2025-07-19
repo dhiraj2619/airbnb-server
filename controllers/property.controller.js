@@ -4,6 +4,7 @@ const Property = require("../models/property.model");
 const PropertyType = require("../models/propertyType.model");
 const PrivacyOption = require("../models/privacyOption.model");
 const Amenity = require("../models/amenity.model");
+const mongoose = require("mongoose");
 
 const createInitialProperty = async (req, res) => {
   try {
@@ -416,14 +417,21 @@ const createAmenity = async (req, res) => {
   try {
     const { name, type, amenityType } = req.body;
 
-    const parent = await PropertyType.findById(type);
+    console.log("Received type:", type);
 
-    if (!parent) throw Error("invalid Property Type id");
+    if (!mongoose.Types.ObjectId.isValid(type)) {
+      return res.status(400).json({ message: "Invalid Property Type ID format" });
+    }
+
+    const parent = await PropertyType.findById(type);
+    if (!parent) {
+      return res.status(400).json({ message: "Invalid Property Type ID" });
+    }
 
     if (!req.files || !req.files.thumbnail) {
       return res
         .status(400)
-        .json({ message: "please upload a thumbnail image" });
+        .json({ message: "Please upload a thumbnail image" });
     }
 
     const thumbnailResult = await Cloudinary.v2.uploader.upload(
@@ -630,6 +638,28 @@ const getPropertyprivacyById = async (req, res) => {
   }
 };
 
+
+const getAmenitiesListBypropertyType=async(req,res)=>{
+  try {
+     const { propertyTypeId } = req.params;
+
+    const amenities = await Amenity.find({ type: propertyTypeId });
+
+    if (!amenities || amenities.length === 0) {
+      return res.status(404).json({ message: "No amenities found for this property type" });
+    }
+
+    res.status(200).json({
+      success: true,
+      amenities,
+    });
+    
+  } catch (error) {
+    console.error("Error fetching amenities by property type:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   getAllProperties,
   getHostProperties,
@@ -644,4 +674,5 @@ module.exports = {
   getPropertyById,
   getPropertyprivacyById,
   createAmenity,
+  getAmenitiesListBypropertyType
 };

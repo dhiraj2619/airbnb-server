@@ -5,14 +5,20 @@ const amenitySchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-   type:{
+  type: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "PropertyType",
     required: true,
   },
-  icon: {
-    type: String,
-    required: false, 
+  thumbnail: {
+    public_id: {
+      type: String,
+      required: [true, "Please upload a thumbnail image"],
+    },
+    url: {
+      type: String,
+      required: [true, "Please upload a thumbnail image"],
+    },
   },
   amenityType: {
     type: String,
