@@ -125,27 +125,80 @@ const propertySchema = new mongoose.Schema({
 });
 
 propertySchema.pre("validate", async function (next) {
-  if (!this.privacyType) return next();
-
-  if (!this.isModified("privacyType")) return next();
-
   try {
     const PrivacyOption = mongoose.model("PrivacyOption");
+    const Amenity = mongoose.model("Amenity");
 
-    const option = await PrivacyOption.findById(this.privacyType).select(
-      "type"
-    );
+    // Validate privacyType belongs to selected propertyType
+    if (this.privacyType && this.isModified("privacyType")) {
+      const option = await PrivacyOption.findById(this.privacyType).select("type");
 
-    if (!option || option.type.toString() !== this.propertyType?.toString()) {
-      return next(
-        new Error("privacyType does not belong to the selected propertyType")
-      );
+      if (!option || option.type.toString() !== this.propertyType?.toString()) {
+        return next(
+          new Error("privacyType does not belong to the selected propertyType")
+        );
+      }
     }
+
+    // Function to validate amenity category
+    const validateAmenities = async (amenitiesList, expectedType) => {
+      for (let id of amenitiesList) {
+        const amenity = await Amenity.findById(id).select("type amenityType");
+
+        if (!amenity) {
+          return next(new Error(`Amenity not found: ${id}`));
+        }
+
+        if (amenity.type.toString() !== this.propertyType.toString()) {
+          return next(
+            new Error(
+              `Amenity ${id} does not match selected propertyType`
+            )
+          );
+        }
+
+        if (amenity.amenityType !== expectedType) {
+          return next(
+            new Error(
+              `Amenity ${id} is not a ${expectedType} type`
+            )
+          );
+        }
+      }
+    };
+
+    await validateAmenities(this.amenities.guestFavorites, "guestFavorite");
+    await validateAmenities(this.amenities.standoutAmenities, "standout");
+    await validateAmenities(this.amenities.safetyItems, "safety");
 
     next();
   } catch (err) {
     next(err);
   }
 });
+
+// propertySchema.pre("validate", async function (next) {
+//   if (!this.privacyType) return next();
+
+//   if (!this.isModified("privacyType")) return next();
+
+//   try {
+//     const PrivacyOption = mongoose.model("PrivacyOption");
+
+//     const option = await PrivacyOption.findById(this.privacyType).select(
+//       "type"
+//     );
+
+//     if (!option || option.type.toString() !== this.propertyType?.toString()) {
+//       return next(
+//         new Error("privacyType does not belong to the selected propertyType")
+//       );
+//     }
+
+//     next();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 module.exports = mongoose.model("Property", propertySchema);

@@ -3,7 +3,7 @@ const Cloudinary = require("cloudinary");
 const Property = require("../models/property.model");
 const PropertyType = require("../models/propertyType.model");
 const PrivacyOption = require("../models/privacyOption.model");
-const Aminity = require("../models/amenity.model");
+const Amenity = require("../models/amenity.model");
 
 const createInitialProperty = async (req, res) => {
   try {
@@ -24,6 +24,7 @@ const createInitialProperty = async (req, res) => {
       bedrooms: 1,
       bathrooms: 1,
       locksToAllBedrooms: null,
+      amenities:null,
       location: {
         address: "",
         city: "",
@@ -411,9 +412,10 @@ const createAmenity = async (req, res) => {
   try {
     const { name, type , amenityType } = req.body;
 
-    const parent = await PropertyType.findById(type);
+   const parent = await PropertyType.findById(type);
 
     if (!parent) throw Error("invalid Property Type id");
+
 
     if (!req.files || !req.files.thumbnail) {
       return res
@@ -428,7 +430,7 @@ const createAmenity = async (req, res) => {
       }
     );
 
-    const amenities = await Aminity.create({
+    const amenities = await Amenity.create({
       name,
       type,
       amenityType,

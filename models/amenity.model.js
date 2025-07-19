@@ -5,14 +5,14 @@ const amenitySchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+   type:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PropertyType",
+    required: true,
+  },
   icon: {
     type: String,
     required: false, 
-  },
-  type:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "PropertyType",
-    required: false,
   },
   amenityType: {
     type: String,
@@ -20,5 +20,7 @@ const amenitySchema = new mongoose.Schema({
     required: false,
   },
 });
+
+amenitySchema.index({ name: 1, type: 1 }, { unique: true });
 
 module.exports = mongoose.model("Amenity", amenitySchema);
